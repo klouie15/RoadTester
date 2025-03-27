@@ -1,0 +1,134 @@
+[
+  {
+    "location":"Abbotsford",
+    "address":"31935 South Fraser Way",
+    "latitude":49.0500002,
+    "longitude":-122.3390571677
+  },
+  {
+    "location":"Burnaby",
+    "address":"3880 Lougheed Highway",
+    "latitude":49.2629570706,
+    "longitude":-123.0292688621
+  },
+  {
+    "location":"Burnaby (Claims Centre)",
+    "address":"4399 Wayburne Drive",
+    "latitude":49.2418983047,
+    "longitude":-122.9981490641
+  },
+  {
+    "location":"Chilliwack",
+    "address":"46052 Chilliwack Central Road",
+    "latitude":49.161950953,
+    "longitude":-121.9349766494
+  },
+  {
+    "location":"Kamloops",
+    "address":"937 Concordia Way",
+    "latitude":50.6734762,
+    "longitude":-120.3769140693
+  },
+  {
+    "location":"Kelowna",
+    "address":"1720 Springfield Road",
+    "latitude":49.8776304,
+    "longitude":-119.4604106701
+  },
+  {
+    "location":"Langley",
+    "address":"19950 Willowbrook Drive",
+    "latitude":49.116251,
+    "longitude":-122.670377
+  },
+  {
+    "location":"Maple Ridge",
+    "address":"22811 Dewdney Trunk Road",
+    "latitude":49.268241942,
+    "longitude":-122.7980755986
+  },
+  {
+    "location":"Nanaimo",
+    "address":"6475 Metral Drive",
+    "latitude":49.23362565,
+    "longitude":-124.0467453113
+  },
+  {
+    "location":"North Vancouver",
+    "address":"1331 Marine Drive",
+    "latitude":44.6169984,
+    "longitude":-63.5010844
+  },
+  {
+    "location":"Port Coquitlam",
+    "address":"1930 Oxford Connector",
+    "latitude":49.2632305,
+    "longitude":-122.7679091573
+  },
+  {
+    "location":"Prince George",
+    "address":"4001 15th Avenue",
+    "latitude":40.6371769,
+    "longitude":-73.9825054
+  },
+  {
+    "location":"Richmond",
+    "address":"5300 No. 3 Road",
+    "latitude":-37.5874295066,
+    "longitude":145.9464604333
+  },
+  {
+    "location":"Richmond (Claims Centre)",
+    "address":"7200 Elmbridge Way",
+    "latitude":49.1716714,
+    "longitude":-123.1456979308
+  },
+  {
+    "location":"Surrey",
+    "address":"13426 78 Avenue",
+    "latitude":49.14397095,
+    "longitude":-122.8496950463
+  },
+  {
+    "location":"Surrey (Guildford Boardwalk)",
+    "address":"15285 - 101st Avenue",
+    "latitude":44.9891457884,
+    "longitude":-91.3594554426
+  },
+  {
+    "location":"Surrey (Guildford Claims Centre)",
+    "address":"10262 152A Street",
+    "latitude":49.1891176,
+    "longitude":-122.7992439
+  },
+  {
+    "location":"Surrey (Newton Claims Centre)",
+    "address":"13665 68 Avenue",
+    "latitude":49.1264223,
+    "longitude":-122.8436244
+  },
+  {
+    "location":"Surrey",
+    "address":"15285 - 101st Avenue",
+    "latitude":44.9891457884,
+    "longitude":-91.3594554426
+  },
+  {
+    "location":"Vancouver",
+    "address":"4126 Macdonald Street",
+    "latitude":49.2498109,
+    "longitude":-123.1675322
+  },
+  {
+    "location":"Vancouver (Kingsway Claims Centre)",
+    "address":"999 Kingsway",
+    "latitude":49.2547098,
+    "longitude":-123.0847560325
+  },
+  {
+    "location":"Victoria",
+    "address":"1150 McKenzie Avenue",
+    "latitude":48.47129625,
+    "longitude":-123.3604899807
+  }
+]
