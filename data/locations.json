@@ -91,8 +91,8 @@
     "location":"Prince George",
     "address":"4001 15th Avenue",
     "coordinates":[
-      50.4424185406,
-      -104.6144375499
+      50.44242825,
+      -104.6064333
     ]
   },
   {
@@ -121,7 +121,7 @@
   },
   {
     "location":"Surrey (Guildford Boardwalk)",
-    "address":"15285  101 Avenue",
+    "address":"15285 101 Avenue",
     "coordinates":[
       49.1863077,
       -122.7990111
@@ -141,14 +141,6 @@
     "coordinates":[
       49.1264223,
       -122.8436244
-    ]
-  },
-  {
-    "location":"Surrey",
-    "address":"15285  101 Avenue",
-    "coordinates":[
-      49.1863077,
-      -122.7990111
     ]
   },
   {

@@ -48,6 +48,8 @@ def save_locations(path: str, locations: pd.DataFrame) -> None:
 def retrieve_location_coordinates(locations: pd.DataFrame) -> pd.DataFrame:
     nominatim = Nominatim(user_agent="road_tester", timeout=5)
 
+    locations = locations.copy().drop_duplicates(subset=["address"])
+
     results = locations["address"].apply(
         lambda address: nominatim.geocode(address, country_codes="ca")
     )
@@ -68,7 +70,7 @@ def clean_address(address: str) -> str:
 
     address = re.sub(ADDRESS_NUMBER_ABBREVIATION_PATTERN, "Number ", address, flags=re.IGNORECASE)
 
-    address = re.sub("-", "", address)
+    address = re.sub(" - ", " ", address)
 
     address = re.sub(ADDRESS_NUMBER_SUFFIX_PATTERN, r"\1", address, flags=re.IGNORECASE)
 

@@ -9,15 +9,29 @@ import Location from "../models/Location.tsx"
 import locations from "../../../data/locations.json";
 import { JSX } from "react";
 
-function LocationSelector(): JSX.Element {
+function LocationSelector({ setCenter }: {
+    setCenter: (coordinates: number[]) => void
+}): JSX.Element {
+
+    function handleSelectChange(locationName: string): void {
+
+        const selectedLocation: Location | undefined = locations.find(
+            (location: Location): boolean => location.location === locationName
+        );
+
+        if (selectedLocation) {
+            setCenter(selectedLocation.coordinates)
+        }
+    }
+
     return <div className={"my-6"}>
-        <Select>
+        <Select onValueChange={handleSelectChange}>
             <SelectTrigger className="w-[200px]">
                 <SelectValue placeholder="Select Testing Location" />
             </SelectTrigger>
             <SelectContent>
                 {locations.map((location: Location) => (
-                    <SelectItem value={location.location}>{location.location}</SelectItem>
+                    <SelectItem key={location.address} value={location.location}>{location.location}</SelectItem>
                 ))}
             </SelectContent>
         </Select>
