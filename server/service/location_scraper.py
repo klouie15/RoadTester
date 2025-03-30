@@ -12,7 +12,7 @@ ADDRESS_STARTS_WITH_IMPLICIT_UNIT_PATTERN = r"^\s*\S+-"
 ADDRESS_ENDS_WITH_EXPLICIT_UNIT_PATTERN = r",\s*Unit\s+\S+$"
 ADDRESS_NUMBER_ABBREVIATION_PATTERN = r"\bNo\.\s*"
 ADDRESS_NUMBER_SUFFIX_PATTERN = r"(\d\d\d+)(st|nd|rd|th)\b"
-SAVE_PATH = "../data/locations.json"
+SAVE_PATH = "../../data/locations.json"
 
 
 def scrape_locations() -> pd.DataFrame:
