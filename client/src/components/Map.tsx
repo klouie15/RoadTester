@@ -1,15 +1,22 @@
 import Location from "../models/Location.tsx"
-import { JSX, useEffect } from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { JSX, useEffect, FC } from "react";
+import { MapContainer, TileLayer, Marker, Popup, Polyline } from "react-leaflet";
+import { LatLngExpression } from "leaflet";
 import { useMap } from "react-leaflet";
 import 'leaflet/dist/leaflet.css';
 
 const defaultZoom = 11;
 const locationSelectedZoom = 14;
 
-function Map({ center, isLocationSelected, location }: {
-    center: number[], isLocationSelected: boolean, location: Location | null;
-}): JSX.Element {
+interface MapProps {
+    center: number[],
+    isLocationSelected: boolean,
+    location: Location | null,
+    route: LatLngExpression[],
+}
+
+const Map: FC<MapProps> = ({ center, isLocationSelected, location, route }: MapProps):
+    JSX.Element => {
 
     return <div className={"relative z-0"}>
         <MapContainer center={center} zoom={isLocationSelected ? locationSelectedZoom : defaultZoom}>
@@ -27,6 +34,7 @@ function Map({ center, isLocationSelected, location }: {
                 </Marker>
                 )
             }
+            <Polyline positions={route} color={"red"} weight={4} />
         </MapContainer>
     </div>
 }

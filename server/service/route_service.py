@@ -1,13 +1,14 @@
 import requests
 import overpy
 import random
-
+from typing import List
+from decimal import Decimal
 
 BASE_URL = "http://router.project-osrm.org/"
 
 
-def generate_route(start_coordinates: list,
-                   slow_zone_coordinates: list):
+def generate_route(start_coordinates: List[float],
+                   slow_zone_coordinates: List[float]) -> str:
     service = "route"
     version = "v1"
     profile = "driving"
@@ -19,13 +20,14 @@ def generate_route(start_coordinates: list,
     slow_zone = ",".join([str(c) for c in slow_zone_coordinates])
 
     url = f"{BASE_URL}/{service}/{version}/{profile}/{start};{slow_zone};{start}"
-    print(url)
 
     response = requests.get(url)
-    print(response.json())
+    return response.json()["routes"][0]["geometry"]
 
 
-def retrieve_slow_zones(location_coordinates: list, radius_m: int) -> list:
+def retrieve_slow_zones(location_coordinates: List[float], radius_m: int) -> list[
+    tuple[Decimal | float | None, Decimal | float | None]
+]:
     overpass = overpy.Overpass()
 
     query = f"""
@@ -45,14 +47,12 @@ def retrieve_slow_zones(location_coordinates: list, radius_m: int) -> list:
     return slow_zones
 
 
-def compile_route(location_coordinates: list, radius_m: int) -> None:
+def compile_route(location_coordinates: List[float], radius_m: int) -> str | None:
     slow_zones = retrieve_slow_zones(location_coordinates, radius_m)
 
     slow_zone_coordinates = list(random.choice(slow_zones))
     if not slow_zone_coordinates:
         print("Nearby school/playground zone not found.")
+        return
 
-    generate_route(location_coordinates, slow_zone_coordinates)
-
-
-compile_route([49.2498109, -123.1675322], 2000)
+    return generate_route(location_coordinates, slow_zone_coordinates)

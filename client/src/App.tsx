@@ -1,14 +1,14 @@
-import * as React from "react";
 import LocationSelector from "./components/LocationSelector.tsx";
 import Map from "./components/Map";
 import GenerateButton from "@/components/GenerateButton.tsx";
 import Location from "@/models/Location.tsx";
-import { JSX } from "react";
+import { JSX, useState } from "react";
+import {LatLngExpression} from "leaflet";
 
 function App(): JSX.Element {
-    const [center, setCenter] = React.useState<number[]>([49.2629570706, -123.0292688621]);
-    const [isLocationSelected, setIsLocationSelected] = React.useState<boolean>(false);
-    const [location, setLocation] = React.useState<Location | null>(null);
+    const [center, setCenter] = useState<number[]>([49.2629570706, -123.0292688621]);
+    const [isLocationSelected, setIsLocationSelected] = useState<boolean>(false);
+    const [location, setLocation] = useState<Location | null>(null);
 
     return <>
         <h1 className={"text-3xl"}>RoadTester</h1>
@@ -19,8 +19,13 @@ function App(): JSX.Element {
             }
         } setLocation={setLocation}
         />
-        <GenerateButton />
-        <Map center={center} isLocationSelected={isLocationSelected} location={location} />
+        <GenerateButton/>
+        <Map
+            center={center}
+            isLocationSelected={isLocationSelected}
+            location={location}
+            route={route}
+        />
     </>
 }
 
