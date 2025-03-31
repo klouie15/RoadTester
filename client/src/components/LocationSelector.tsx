@@ -9,8 +9,9 @@ import Location from "../models/Location.tsx"
 import locations from "../../../data/locations.json";
 import { JSX } from "react";
 
-function LocationSelector({ setCenter }: {
-    setCenter: (coordinates: number[]) => void
+function LocationSelector({ setCenter, setLocation }: {
+    setCenter: (coordinates: number[]) => void,
+    setLocation: (location: Location) => void
 }): JSX.Element {
 
     function handleSelectChange(locationName: string): void {
@@ -21,6 +22,7 @@ function LocationSelector({ setCenter }: {
 
         if (selectedLocation) {
             setCenter(selectedLocation.coordinates)
+            setLocation(selectedLocation)
         }
     }
 

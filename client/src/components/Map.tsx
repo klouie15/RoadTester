@@ -1,11 +1,16 @@
+import Location from "../models/Location.tsx"
 import { JSX, useEffect } from "react";
-import { MapContainer, TileLayer, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { useMap } from "react-leaflet";
 import 'leaflet/dist/leaflet.css';
 
 const defaultZoom = 11;
 const locationSelectedZoom = 14;
 
-function Map({ center, isLocationSelected }: { center: number[], isLocationSelected: boolean }): JSX.Element {
+function Map({ center, isLocationSelected, location }: {
+    center: number[], isLocationSelected: boolean, location: Location | null;
+}): JSX.Element {
+
     return <div className={"relative z-0"}>
         <MapContainer center={center} zoom={isLocationSelected ? locationSelectedZoom : defaultZoom}>
             <TileLayer
@@ -13,6 +18,15 @@ function Map({ center, isLocationSelected }: { center: number[], isLocationSelec
                 url={'https://tile.openstreetmap.org/{z}/{x}/{y}.png'}
             />
             <ChangeView center={center} zoom={isLocationSelected ? locationSelectedZoom : defaultZoom} />
+
+            {isLocationSelected && (
+                <Marker position={center}>
+                    {location && (
+                        <Popup>{location.location} <br/> {location.address}</Popup>
+                    )}
+                </Marker>
+                )
+            }
         </MapContainer>
     </div>
 }
