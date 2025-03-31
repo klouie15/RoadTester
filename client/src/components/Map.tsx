@@ -34,7 +34,7 @@ const Map: FC<MapProps> = ({ center, isLocationSelected, location, route }: MapP
                 </Marker>
                 )
             }
-            <Polyline positions={route} color={"red"} weight={4} />
+            <Polyline positions={route} color={"red"} weight={3} />
         </MapContainer>
     </div>
 }
