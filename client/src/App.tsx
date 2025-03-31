@@ -3,8 +3,9 @@ import LocationSelector from "./components/LocationSelector.tsx";
 import Map from "./components/Map";
 import GenerateButton from "@/components/GenerateButton.tsx";
 import Location from "@/models/Location.tsx";
+import { JSX } from "react";
 
-function App() {
+function App(): JSX.Element {
     const [center, setCenter] = React.useState<number[]>([49.2629570706, -123.0292688621]);
     const [isLocationSelected, setIsLocationSelected] = React.useState<boolean>(false);
     const [location, setLocation] = React.useState<Location | null>(null);

@@ -51,7 +51,7 @@ def retrieve_location_coordinates(locations: pd.DataFrame) -> pd.DataFrame:
     locations = locations.copy().drop_duplicates(subset=["address"])
 
     results = locations["address"].apply(
-        lambda address: nominatim.geocode(address, country_codes="ca")
+        lambda address: nominatim.geocode(address + ", British Columbia, Canada")
     )
 
     locations["coordinates"] = results.apply(

@@ -32,7 +32,7 @@ function LocationSelector({ setCenter, setLocation }: {
                 <SelectValue placeholder="Select Testing Location" />
             </SelectTrigger>
             <SelectContent>
-                {locations.map((location: Location) => (
+                {locations.map((location: Location): JSX.Element => (
                     <SelectItem key={location.address} value={location.location}>{location.location}</SelectItem>
                 ))}
             </SelectContent>
