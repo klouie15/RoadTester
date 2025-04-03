@@ -2,7 +2,7 @@ import LocationSelector from "./components/LocationSelector.tsx";
 import Map from "./components/Map";
 import GenerateButton from "@/components/GenerateButton.tsx";
 import Location from "@/models/Location.tsx";
-import { JSX, useState } from "react";
+import {JSX, useEffect, useState} from "react";
 import {LatLngExpression} from "leaflet";
 import RouteRequest from "@/models/RouteRequest.tsx";
 import axios from "axios";
@@ -12,6 +12,10 @@ function App(): JSX.Element {
     const [isLocationSelected, setIsLocationSelected] = useState<boolean>(false);
     const [location, setLocation] = useState<Location | null>(null);
     const [route, setRoute] = useState<LatLngExpression[]>([]);
+
+    useEffect((): void => {
+        setRoute([]);
+    }, [center]);
 
     const generateRoute: () => Promise<void> =
         async (): Promise<void> => {

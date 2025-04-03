@@ -3,7 +3,6 @@ from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from service import route_service, decode_polyline_service
 
-RADIUS_M = 2000
 
 app = FastAPI()
 
@@ -27,12 +26,12 @@ class RouteRequest(BaseModel):
 
 @app.post("/generate-route")
 async def generate_route(request: RouteRequest):
-    location_coordinates = [request.start_latitude, request.start_longitude]
+    location_coordinates = (request.start_latitude, request.start_longitude)
 
-    route = route_service.compile_route(location_coordinates, RADIUS_M)
+    route = route_service.generate_route(location_coordinates)
 
     if not route:
         return
 
-    route_coordinates = decode_polyline_service.decode_polyline(route)
+    route_coordinates = decode_polyline_service.decode_polyline(route["routes"][0]["geometry"])
     return {"route": route_coordinates}

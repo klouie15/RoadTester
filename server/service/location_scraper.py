@@ -4,14 +4,18 @@ import pandas as pd
 import re
 import requests
 
+
 URL = "https://www.icbc.com/driver-licensing/visit-dl-office/Book-a-road-test"
+
 LOCATIONS_UL_CLASS = "group/list styled-list mb-4 list-disc pl-6 [&>li>ul]:my-1"
 LOCATIONS_UL_POSITION = 1
+
 ADDRESS_STARTS_WITH_EXPLICIT_UNIT_PATTERN = r"^\s*Unit\s+\S+\s+"
 ADDRESS_STARTS_WITH_IMPLICIT_UNIT_PATTERN = r"^\s*\S+-"
 ADDRESS_ENDS_WITH_EXPLICIT_UNIT_PATTERN = r",\s*Unit\s+\S+$"
 ADDRESS_NUMBER_ABBREVIATION_PATTERN = r"\bNo\.\s*"
 ADDRESS_NUMBER_SUFFIX_PATTERN = r"(\d\d\d+)(st|nd|rd|th)\b"
+
 SAVE_PATH = "../../data/locations.json"
 
 
