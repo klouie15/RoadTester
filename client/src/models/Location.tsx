@@ -1,9 +1,11 @@
 import { LatLngExpression } from "leaflet";
 
-interface Location {
+export default interface Location {
     location: string;
     address: string;
-    coordinates: LatLngExpression;
+    coordinates: number[];
 }
 
-export default Location;
+export function toLatLngExpression(location: Location): LatLngExpression {
+    return [location.coordinates[0], location.coordinates[1]] as LatLngExpression;
+}

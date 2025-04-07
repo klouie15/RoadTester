@@ -5,23 +5,23 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import Location from "../models/Location.tsx"
+import Location, { toLatLngExpression } from "../models/Location.tsx"
 import locations from "../../../data/locations.json";
 import { JSX } from "react";
+import { LatLngExpression } from "leaflet";
 
 function LocationSelector({ setCenter, setLocation }: {
-    setCenter: (coordinates: number[]) => void,
+    setCenter: (coordinates: LatLngExpression) => void,
     setLocation: (location: Location) => void
 }): JSX.Element {
 
     function handleSelectChange(locationName: string): void {
-
-        const selectedLocation: Location | undefined = locations.find(
-            (location: Location): boolean => location.location === locationName
+        const selectedLocation = locations.find(
+            (location) => location.location === locationName
         );
 
         if (selectedLocation) {
-            setCenter(selectedLocation.coordinates)
+            setCenter(toLatLngExpression(selectedLocation))
             setLocation(selectedLocation)
         }
     }
@@ -32,7 +32,7 @@ function LocationSelector({ setCenter, setLocation }: {
                 <SelectValue placeholder="Select Testing Location" />
             </SelectTrigger>
             <SelectContent>
-                {locations.map((location: Location): JSX.Element => (
+                {locations.map((location) => (
                     <SelectItem key={location.address} value={location.location}>{location.location}</SelectItem>
                 ))}
             </SelectContent>

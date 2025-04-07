@@ -1,6 +1,8 @@
 import requests
 import overpy
 import random
+from typing import TypedDict, List, Dict, Any
+import polyline
 
 
 HTTP_STATUS_OK = 200
@@ -14,34 +16,111 @@ RADIUS_M = 1750
 OSRM_BASE_URL = "http://router.project-osrm.org/route/v1/driving"
 OSRM_NEAREST_URL = "http://router.project-osrm.org/nearest/v1/driving"
 
+class DirectionStep(TypedDict):
+    instruction: str
+    distance: str
+    type: str
 
-def generate_route(start_coordinates: tuple[float, float]) -> str | None:
+def format_distance(meters: float) -> str:
+    if meters < 1000:
+        return f"{int(meters)} meters"
+    else:
+        return f"{meters/1000:.1f} km"
+
+def get_direction_type(maneuver: Dict[str, Any]) -> str:
+    maneuver_type = maneuver.get("type", "")
+    modifier = maneuver.get("modifier", "")
+    
+    if maneuver_type == "turn":
+        if modifier in ["left", "right"]:
+            return modifier
+    elif maneuver_type == "continue":
+        return "straight"
+    elif maneuver_type == "depart":
+        return "straight"
+    elif maneuver_type == "arrive":
+        return "straight"
+    return "straight"
+
+
+def generate_route(start_coordinates: tuple[float, float]) -> Dict[str, Any] | None:
     start = str(start_coordinates[1]) + "," + str(start_coordinates[0])
 
-    while True:
-        slow_zones = retrieve_slow_zones(start_coordinates, RADIUS_M)
+    slow_zones = retrieve_slow_zones(start_coordinates, RADIUS_M)
 
-        slow_zone_coordinates = list(random.choice(slow_zones))
-        if not slow_zone_coordinates:
-            print("Nearby school/playground zone not found.")
+    slow_zone_coordinates = list(random.choice(slow_zones))
+    if not slow_zone_coordinates:
+        print("Nearby school/playground zone not found.")
+        return None
+
+    slow_zone_coordinates.reverse()
+    slow_zone = ",".join([str(c) for c in slow_zone_coordinates])
+
+    waypoint_coordinates = generate_random_waypoints(start_coordinates, RADIUS_M)
+    waypoints = ";".join(f"{lon},{lat}" for lat, lon in waypoint_coordinates)
+
+    coordinate_str = f"{start};{slow_zone};{waypoints};{start}"
+    url = f"{OSRM_BASE_URL}/{coordinate_str}?overview=full&continue_straight=true&steps=true"
+    print(f"Request URL: {url}")
+
+    try:
+        response = requests.get(url)
+        print(f"Response status: {response.status_code}")
+        
+        if response.status_code != HTTP_STATUS_OK:
+            print(f"Error response: {response.text}")
+            return None
+            
+        data = response.json()
+        
+        if not data or "routes" not in data or not data["routes"]:
+            print("No routes found in response")
+            return None
+            
+        route_data = data["routes"][0]
+        if "geometry" not in route_data:
+            print("Invalid route geometry data")
             return None
 
-        slow_zone_coordinates.reverse()
-        slow_zone = ",".join([str(c) for c in slow_zone_coordinates])
+        decoded_coordinates = polyline.decode(route_data["geometry"])
+        route_coordinates = [[lat, lon] for lat, lon in decoded_coordinates]
+        steps = process_steps(route_data)
 
-        waypoint_coordinates = generate_random_waypoints(start_coordinates, RADIUS_M)
-        waypoints = ";".join(f"{lon},{lat}" for lat, lon in waypoint_coordinates)
+        return {
+            "route": route_coordinates,
+            "steps": steps
+        }
+        
+    except requests.exceptions.RequestException as e:
+        print(f"Request failed: {e}")
+        return None
+    except (KeyError, IndexError) as e:
+        print(f"Error parsing response: {e}")
+        return None
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+        return None
 
-        coordinate_str = f"{start};{slow_zone};{waypoints};{start}"
-        url = f"{OSRM_BASE_URL}/{coordinate_str}?overview=full&continue_straight=true"
-        print(url)
 
-        response = requests.get(url)
-        if response.status_code != HTTP_STATUS_OK:
-            print(response.json())
-            continue
+def process_steps(route_data):
+    steps: List[DirectionStep] = []
+    if "legs" in route_data and route_data["legs"]:
+        for leg in route_data["legs"]:
+            if "steps" in leg:
+                for step in leg["steps"]:
+                    if step["maneuver"]["type"] == "arrive":
+                        continue
 
-        return response.json()
+                    instruction = step["name"]
+                    distance = format_distance(step["distance"])
+                    direction_type = get_direction_type(step["maneuver"])
+
+                    steps.append({
+                        "instruction": instruction,
+                        "distance": distance,
+                        "type": direction_type
+                    })
+    return steps
 
 
 def generate_random_waypoints(
@@ -54,9 +133,16 @@ def generate_random_waypoints(
 
     query = f"""
     [out:json];
-    way(around:{radius_m},{lat},{lon})
-      ["highway"~"residential|unclassified|tertiary|secondary|primary"]
-      ["service"!~"parking_aisle|driveway|parking"];
+    (
+      way(around:{radius_m},{lat},{lon})
+        ["highway"~"residential|unclassified|tertiary|secondary|primary"]
+        ["service"!~"parking_aisle|driveway|parking"]
+        ["access"!~"private|no"];
+     way(around:{radius_m},{lat},{lon})
+        ["highway"~"residential|unclassified|tertiary|secondary|primary"]
+        ["service"!~"parking_aisle|driveway|parking"]
+        ["access"!~"private|no"];
+    );
     out center {NUMBER_OF_WAYS * 2};
     """
 
