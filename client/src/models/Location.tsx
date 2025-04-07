@@ -1,7 +1,9 @@
+import { LatLngExpression } from "leaflet";
+
 interface Location {
     location: string;
     address: string;
-    coordinates: number[];
+    coordinates: LatLngExpression;
 }
 
 export default Location;

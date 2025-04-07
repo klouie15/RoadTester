@@ -1,20 +1,15 @@
 import requests
 import overpy
 import random
-import math
 
-
-MIN_DURATION = 10
-MAX_DURATION = 15
 
 HTTP_STATUS_OK = 200
 
 KM_TO_DEGREES_CONVERSION = 111
 M_TO_KM_CONVERSION = 1000
-SEC_TO_MIN_CONVERSION = 60
 
-NUMBER_OF_WAYPOINTS = 5
-RADIUS_M = 1500
+NUMBER_OF_WAYS = 3
+RADIUS_M = 1750
 
 OSRM_BASE_URL = "http://router.project-osrm.org/route/v1/driving"
 OSRM_NEAREST_URL = "http://router.project-osrm.org/nearest/v1/driving"
@@ -46,57 +41,63 @@ def generate_route(start_coordinates: tuple[float, float]) -> str | None:
             print(response.json())
             continue
 
-        route_data = response.json()
-        if is_valid_route(route_data):
-            return route_data
+        return response.json()
 
 
 def generate_random_waypoints(
-        start_coordinates: tuple[float, float],
-        radius_m: int
+    start_coordinates: tuple[float, float],
+    radius_m: int
 ) -> list[tuple[float, float]]:
 
-    waypoints = []
-    radius_km = radius_m / M_TO_KM_CONVERSION
+    overpass = overpy.Overpass()
+    lat, lon = start_coordinates
 
-    latitude = start_coordinates[0]
-    longitude = start_coordinates[1]
+    query = f"""
+    [out:json];
+    way(around:{radius_m},{lat},{lon})
+      ["highway"~"residential|unclassified|tertiary|secondary|primary"]
+      ["service"!~"parking_aisle|driveway|parking"];
+    out center {NUMBER_OF_WAYS * 2};
+    """
 
-    for i in range(NUMBER_OF_WAYPOINTS):
-        latitude_offset = random.uniform(-radius_km / KM_TO_DEGREES_CONVERSION, radius_km / KM_TO_DEGREES_CONVERSION)
-        longitude_offset = random.uniform(
-            -radius_km / (KM_TO_DEGREES_CONVERSION * abs(math.cos(math.radians(latitude)))),
-            radius_km / (KM_TO_DEGREES_CONVERSION * abs(math.cos(math.radians(latitude))))
-        )
+    try:
+        result = overpass.query(query)
+    except overpy.exception.OverpassTooManyRequests:
+        print("Overpass API rate limit hit.")
+        return []
 
-        random_latitude = latitude + latitude_offset
-        random_longitude = longitude + longitude_offset
+    all_waypoints = [
+        (way.center_lat, way.center_lon)
+        for way in result.ways
+        if hasattr(way, "center_lat") and hasattr(way, "center_lon")
+    ]
 
-        snapped_point = snap_to_road((random_latitude, random_longitude))
-        if snapped_point:
-            waypoints.append(snapped_point)
-            break
+    if not all_waypoints:
+        print("No suitable roads found.")
+        return []
 
-    return waypoints
-
-
-def snap_to_road(coordinates: tuple[float, float]):
-    url = f"{OSRM_NEAREST_URL}/{coordinates[1]},{coordinates[0]}"
-    response = requests.get(url)
-
-    if response.status_code == HTTP_STATUS_OK:
-        data = response.json()
-
-        if "waypoints" in data and len(data["waypoints"]) > 0:
-            snapped = data["waypoints"][0]["location"]
-            return snapped[1], snapped[0]
-
-    return None
+    random.shuffle(all_waypoints)
+    selected = all_waypoints[:NUMBER_OF_WAYS]
+    return snap_to_road(selected)
 
 
-def is_valid_route(route_data):
-    duration_minutes = route_data["routes"][0]["duration"] / SEC_TO_MIN_CONVERSION
-    return MIN_DURATION <= duration_minutes <= MAX_DURATION
+def snap_to_road(coordinates: list[tuple[float, float]]):
+    snapped = []
+    for coord in coordinates:
+        url = f"{OSRM_NEAREST_URL}/{coord[1]},{coord[0]}"
+        try:
+            response = requests.get(url)
+            if response.status_code != HTTP_STATUS_OK:
+                return None
+
+            data = response.json()
+            if "waypoints" in data and len(data["waypoints"]) > 0:
+                loc = data["waypoints"][0]["location"]
+                snapped.append((loc[1], loc[0]))
+
+        except requests.exceptions.RequestException as e:
+            print(f"Snap failed: {e}")
+    return snapped
 
 
 def retrieve_slow_zones(

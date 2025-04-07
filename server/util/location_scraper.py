@@ -3,7 +3,7 @@ from geopy.geocoders import Nominatim
 import pandas as pd
 import re
 import requests
-
+import time
 
 URL = "https://www.icbc.com/driver-licensing/visit-dl-office/Book-a-road-test"
 
@@ -15,6 +15,7 @@ ADDRESS_STARTS_WITH_IMPLICIT_UNIT_PATTERN = r"^\s*\S+-"
 ADDRESS_ENDS_WITH_EXPLICIT_UNIT_PATTERN = r",\s*Unit\s+\S+$"
 ADDRESS_NUMBER_ABBREVIATION_PATTERN = r"\bNo\.\s*"
 ADDRESS_NUMBER_SUFFIX_PATTERN = r"(\d\d\d+)(st|nd|rd|th)\b"
+ADDRESS_STREET_NAME_ONLY_PATTERN = r'^\d+\s+'
 
 SAVE_PATH = "../../data/locations.json"
 
@@ -50,19 +51,59 @@ def save_locations(path: str, locations: pd.DataFrame) -> None:
 
 
 def retrieve_location_coordinates(locations: pd.DataFrame) -> pd.DataFrame:
-    nominatim = Nominatim(user_agent="road_tester", timeout=5)
-
+    nominatim = Nominatim(user_agent="road_tester", timeout=10)
     locations = locations.copy().drop_duplicates(subset=["address"])
 
-    results = locations["address"].apply(
-        lambda address: nominatim.geocode(address + ", British Columbia, Canada")
-    )
+    locations["street_name"] = locations["address"].apply(extract_street_name)
+    locations["city"] = locations["location"].str.replace(r"\s*\(.*?\)", "", regex=True)
 
-    locations["coordinates"] = results.apply(
-        lambda location: (location.latitude, location.longitude) if location else None
-    )
+    def try_geocode(query: str, max_retries: int = 3) -> tuple[float, float] | None:
+        for attempt in range(max_retries):
+            try:
+                result = nominatim.geocode(query)
+                if result:
+                    return result.latitude, result.longitude
+            except Exception as e:
+                print(f"Geocoding attempt {attempt + 1} failed for query '{query}': {str(e)}")
+                if attempt < max_retries - 1:
+                    time.sleep(1)  # Wait before retrying
+        return None
 
-    return locations
+    def generate_queries(row: pd.Series) -> list[str]:
+        queries = [
+            f"ICBC {row['street_name']}, {row['city']}, British Columbia, Canada",
+            f"ICBC {row['address']}, {row['city']}, British Columbia, Canada",
+            f"{row['address']}, {row['city']}, British Columbia, Canada",
+            f"{row['street_name']}, {row['city']}, British Columbia, Canada"
+        ]
+
+        return queries
+
+    def get_coordinates(row: pd.Series) -> tuple[float, float] | None:
+        queries = generate_queries(row)
+        for query in queries:
+            coords = try_geocode(query)
+            if coords:
+                print(f"Successfully geocoded: {row['location']} using query: {query}")
+                return coords
+
+        print(f"Failed to geocode: {row['location']} after trying all queries")
+        return None
+
+    locations["coordinates"] = locations.apply(get_coordinates, axis=1)
+
+    # Report any locations that still failed to geocode
+    failed_locations = locations[locations["coordinates"].isna()]
+    if not failed_locations.empty:
+        print("\nFailed to geocode the following locations:")
+        for _, row in failed_locations.iterrows():
+            print(f"- {row['location']}: {row['address']}")
+
+    return locations.drop(columns=["street_name", "city"])
+
+
+def extract_street_name(address: str) -> str:
+    return re.sub(ADDRESS_STREET_NAME_ONLY_PATTERN, '', address)
 
 
 def clean_address(address: str) -> str:

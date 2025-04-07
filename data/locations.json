@@ -3,24 +3,24 @@
     "location":"Abbotsford",
     "address":"31935 South Fraser Way",
     "coordinates":[
-      49.0500002,
-      -122.3390571677
+      49.0500617,
+      -122.338882
     ]
   },
   {
     "location":"Burnaby",
     "address":"3880 Lougheed Highway",
     "coordinates":[
-      49.2629570706,
-      -123.0292688621
+      49.26528595,
+      -123.0184859555
     ]
   },
   {
     "location":"Burnaby (Claims Centre)",
     "address":"4399 Wayburne Drive",
     "coordinates":[
-      49.2418983047,
-      -122.9981490641
+      49.2445109,
+      -122.9987032759
     ]
   },
   {
@@ -51,32 +51,32 @@
     "location":"Langley",
     "address":"19950 Willowbrook Drive",
     "coordinates":[
-      49.116251,
-      -122.670377
+      49.1163951,
+      -122.670153
     ]
   },
   {
     "location":"Maple Ridge",
     "address":"22811 Dewdney Trunk Road",
     "coordinates":[
-      49.268241942,
-      -122.7980755986
+      49.2207491,
+      -122.5896132601
     ]
   },
   {
     "location":"Nanaimo",
     "address":"6475 Metral Drive",
     "coordinates":[
-      49.23362565,
-      -124.0467453113
+      49.2336465,
+      -124.047042
     ]
   },
   {
     "location":"North Vancouver",
     "address":"1331 Marine Drive",
     "coordinates":[
-      49.2088177025,
-      -123.0143666309
+      49.3233021,
+      -123.111446
     ]
   },
   {
@@ -91,8 +91,8 @@
     "location":"Prince George",
     "address":"4001 15th Avenue",
     "coordinates":[
-      50.6745692961,
-      -120.304568029
+      53.9102681635,
+      -122.8058677186
     ]
   },
   {
@@ -123,8 +123,8 @@
     "location":"Surrey (Guildford Boardwalk)",
     "address":"15285 101 Avenue",
     "coordinates":[
-      49.1863077,
-      -122.7990111
+      49.1867012,
+      -122.798705
     ]
   },
   {
@@ -139,8 +139,8 @@
     "location":"Surrey (Newton Claims Centre)",
     "address":"13665 68 Avenue",
     "coordinates":[
-      49.1264223,
-      -122.8436244
+      49.12673465,
+      -122.8437325532
     ]
   },
   {
@@ -155,16 +155,16 @@
     "location":"Vancouver (Kingsway Claims Centre)",
     "address":"999 Kingsway",
     "coordinates":[
-      49.2547098,
-      -123.0847560325
+      49.2548449,
+      -123.0850387
     ]
   },
   {
     "location":"Victoria",
     "address":"1150 McKenzie Avenue",
     "coordinates":[
-      48.47129625,
-      -123.3604899807
+      48.46810705,
+      -123.334698098
     ]
   }
 ]

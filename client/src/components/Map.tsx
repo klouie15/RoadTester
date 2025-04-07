@@ -9,7 +9,7 @@ const defaultZoom = 11;
 const locationSelectedZoom = 14;
 
 interface MapProps {
-    center: number[],
+    center: LatLngExpression,
     isLocationSelected: boolean,
     location: Location | null,
     route: LatLngExpression[],
@@ -39,7 +39,7 @@ const Map: FC<MapProps> = ({ center, isLocationSelected, location, route }: MapP
     </div>
 }
 
-function ChangeView({ center, zoom }: { center: number[], zoom: number }): null {
+function ChangeView({ center, zoom }: { center: LatLngExpression, zoom: number }): null {
     const map = useMap();
 
     useEffect((): void => {
