@@ -23,7 +23,7 @@ class DirectionStep(TypedDict):
 
 def format_distance(meters: float) -> str:
     if meters < 1000:
-        return f"{int(meters)} meters"
+        return f"{int(meters)} m"
     else:
         return f"{meters/1000:.1f} km"
 

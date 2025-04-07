@@ -7,6 +7,7 @@ import { LatLngExpression } from "leaflet";
 import RouteRequest from "@/models/RouteRequest.tsx";
 import axios from "axios";
 import Directions from "./components/Directions.tsx";
+import { Loader2 } from "lucide-react";
 
 interface DirectionStep {
     instruction: string;
@@ -25,6 +26,7 @@ function App(): JSX.Element {
     const [location, setLocation] = useState<Location | null>(null);
     const [route, setRoute] = useState<LatLngExpression[]>([]);
     const [steps, setSteps] = useState<DirectionStep[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     useEffect((): void => {
         setRoute([]);
@@ -37,6 +39,7 @@ function App(): JSX.Element {
                 return;
             }
 
+            setIsLoading(true);
             try {
                 const request: RouteRequest = {
                     start_coordinates: location.coordinates
@@ -46,6 +49,8 @@ function App(): JSX.Element {
                 setSteps(response.data.steps);
             } catch (error) {
                 console.error(error);
+            } finally {
+                setIsLoading(false);
             }
         };
 
@@ -59,18 +64,24 @@ function App(): JSX.Element {
         } setLocation={setLocation}
         />
         <GenerateButton onClick={(): Promise<void> => generateRoute()} />
-        <Map
-            center={center}
-            isLocationSelected={isLocationSelected}
-            location={location}
-            route={route}
-        />
-
-        {steps.length > 0 && (
-            <div className={"my-6 flex justify-center"}>
+        <div className="flex gap-4">
+            <div className="flex-1 relative">
+                <Map
+                    center={center}
+                    isLocationSelected={isLocationSelected}
+                    location={location}
+                    route={route}
+                />
+                {isLoading && (
+                    <div className="absolute inset-0 bg-background/50 flex items-center justify-center">
+                        <Loader2 className="h-12 w-12 animate-spin text-primary" />
+                    </div>
+                )}
+            </div>
+            <div className="w-[400px]">
                 <Directions steps={steps} />
             </div>
-        )}
+        </div>
     </>
 }
 

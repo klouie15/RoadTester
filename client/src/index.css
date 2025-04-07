@@ -4,7 +4,7 @@
 @custom-variant dark (&:is(.dark *));
 
 body {
-    @apply my-10 mx-96
+    @apply my-10 mx-50
 }
 
 .leaflet-container {
