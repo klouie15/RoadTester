@@ -1,7 +1,5 @@
 import { LatLngExpression } from "leaflet";
 
-interface RouteRequest {
-    start_coordinates: LatLngExpression;
+export default interface RouteRequest {
+    start_coordinates: number[];
 }
-
-export default RouteRequest;

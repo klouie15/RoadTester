@@ -2,14 +2,18 @@ import { JSX } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowRight, ArrowLeft, ArrowUp, ArrowDown } from "lucide-react";
 
+type DirectionStepType = "left" | "right" | "straight" | "uturn";
+
 interface DirectionStep {
     instruction: string;
     distance: string;
-    type: "left" | "right" | "straight" | "uturn";
+    type: DirectionStepType;
 }
 
 function Directions({ steps }: { steps: DirectionStep[] }): JSX.Element {
-    const getDirectionIcon = (type: DirectionStep["type"]) => {
+    const getDirectionIcon: (type: DirectionStepType) => JSX.Element =
+        (type: DirectionStepType): JSX.Element => {
+
         switch (type) {
             case "left":
                 return <ArrowLeft className="size-4" />;
@@ -29,7 +33,7 @@ function Directions({ steps }: { steps: DirectionStep[] }): JSX.Element {
             </CardHeader>
             <CardContent className="flex-1 overflow-y-auto">
                 <div className="space-y-4">
-                    {steps.map((step, index) => (
+                    {steps.map((step: DirectionStep, index: number): JSX.Element => (
                         <div
                             key={index}
                             className="flex items-start gap-3 p-3 rounded-lg bg-muted/50"

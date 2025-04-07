@@ -16,8 +16,8 @@ function LocationSelector({ setCenter, setLocation }: {
 }): JSX.Element {
 
     function handleSelectChange(locationName: string): void {
-        const selectedLocation = locations.find(
-            (location) => location.location === locationName
+        const selectedLocation: Location | undefined = locations.find(
+            (location: Location): boolean => location.location === locationName
         );
 
         if (selectedLocation) {
@@ -32,7 +32,7 @@ function LocationSelector({ setCenter, setLocation }: {
                 <SelectValue placeholder="Select Testing Location" />
             </SelectTrigger>
             <SelectContent>
-                {locations.map((location) => (
+                {locations.map((location: Location): JSX.Element => (
                     <SelectItem key={location.address} value={location.location}>{location.location}</SelectItem>
                 ))}
             </SelectContent>
